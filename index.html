@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="images/H-logo.png" type="image/x-icon">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="city-name" type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button id="search-btn" type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div id="weather-status" class="weather-status text-white text-center">
+            <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
+            <h1 id="city-display"></h1>
+            <h3><span id="temperature-display"></span></h3> <!-- &deg;C -->
+            <h1 id="description-display" class="lead"></h1>
+            <h3 id="time-zone"></h3>
+        </div>
+    </div>
+    
+
+    <script>
+        const cityName = document.getElementById('city-name');
+
+        document.getElementById('search-btn').addEventListener('click', function() {
+            fetch('https://api.openweathermap.org/data/2.5/weather?q='+cityName.value+'&appid=75c9c21b0ac279fa8607d6d1ba975a8f')  //,{state code},{country code}
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                
+                //display city name
+                const cityName = data.name;
+                const country = data.sys.country;
+                document.getElementById('city-display').innerText = cityName + ' ' + '/ Country : ' + country;
+
+                // Display temperature
+                const tempKelvin = data.main.temp;
+                const tempCelsius = Math.floor((tempKelvin - 273.15)); // Kelvin scale to Celsius scale
+                const tempFahrenheit = Math.floor((tempKelvin - 273.15) * 9/5 + 32);   //(K − 273.15) × 9/5 + 32 = °F.
+                document.getElementById('temperature-display').innerText = tempCelsius + '℃' + ' / ' + tempFahrenheit + '℉';
+
+                // Display description
+                const tempDescription = data.weather[0].description;
+                document.getElementById('description-display').innerText = tempDescription;
+
+                // Display Time
+                const h1 = document.getElementById('time-zone');
+                const timeZone = (data.timezone)/3600;
+                console.log(timeZone);
+                h1.innerText = "TimeZone: " + timeZone + " GMT";
+            })
+        })
+
+        
+
+
+    </script>
+
+</body>
+
+</html>
